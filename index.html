@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microfone Online</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Transforme seu celular em um microfone virtual.</h1>
+    <h2>Conecte no Bluetooth e comece a gravação.</h2>
+  </header>
+  
+  <main>
+    <section id="controls">
+      <button id="start-recording">Começar Gravação</button>
+      <button id="stop-recording" disabled>Parar Gravação</button>
+    </section>
+    <section id="temp">
+      <span id="timer-display">00:00</span>
+    </section>
+    <section id="waveform-container">
+      <canvas id="waveform-canvas" width="600" height="200"></canvas>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Microfone Online</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/15.1.3/Tone.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
