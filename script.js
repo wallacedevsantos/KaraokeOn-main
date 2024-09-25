@@ -1,11 +1,11 @@
         // Referências aos elementos da interface
+        const audioInputSelect = document.getElementById('audio-input-select');
         const startRecordingBtn = document.getElementById('start-recording');
         const stopRecordingBtn = document.getElementById('stop-recording');
         const waveformCanvas = document.getElementById('waveform-canvas');
         const timerDisplay = document.getElementById('timer-display'); // Contador
 
-        // Inicializar o contexto de áudio do Tone.js
-        Tone.start(); // Iniciar o contexto de áudio do Tone.js
+        // Inicializar variáveis
         let mediaStream = null;
         let mediaRecorder = null;
         let recordingInterval = null;
@@ -81,11 +81,29 @@
             draw();
         }
 
+        // Função para listar dispositivos de entrada de áudio
+        async function getAudioInputDevices() {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const audioInputs = devices.filter(device => device.kind === 'audioinput');
+
+            audioInputs.forEach(device => {
+                const option = document.createElement('option');
+                option.value = device.deviceId;
+                option.text = device.label || `Microfone ${audioInputSelect.length + 1}`;
+                audioInputSelect.appendChild(option);
+            });
+        }
+
         // Função para iniciar a gravação
         async function startRecording() {
             try {
-                // Solicitar acesso ao microfone do usuário
-                mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const deviceId = audioInputSelect.value; // Obter o ID do dispositivo selecionado
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        deviceId: { exact: deviceId },
+                        // Não definindo taxa de amostragem ou codificação
+                    }
+                });
 
                 // Criar uma nova instância de UserMedia para o Tone.js
                 source = new Tone.UserMedia();
@@ -131,6 +149,8 @@
 
             } catch (error) {
                 console.error('Erro ao iniciar a gravação de áudio:', error);
+                // Tente conectar um microfone diferente, se houver erro
+                stopRecording();
             }
         }
 
@@ -163,6 +183,9 @@
                 reverb = null;
             }
         }
+
+        // Inicializar os dispositivos de áudio ao carregar a página
+        getAudioInputDevices();
 
         // Eventos dos botões de gravação
         startRecordingBtn.addEventListener('click', startRecording);
